@@ -5,7 +5,6 @@ python:
   - "3.4"
   
 install:
-  - apt install g++
   - pip3 install psutil
 
 script:
