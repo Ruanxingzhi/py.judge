@@ -1,8 +1,8 @@
 {
     "name": "aplusb",
-    "source_ext": ".cpp",
+    "source_ext": ".c",
     "build_file": "a.out",
-    "compiler": "g++ -O0 -std=c++11",
+    "compiler": "gcc -O0",
     "start_id": 1,
     "end_id": 10,
     "input_suffix": "in",
