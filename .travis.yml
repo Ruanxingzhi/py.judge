@@ -1,4 +1,5 @@
 language: python
+language: cpp
 
 python:
   - "3.4"
