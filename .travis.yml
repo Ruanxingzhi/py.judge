@@ -1,0 +1,10 @@
+language: python
+
+python:
+  - "3.4"
+  
+install:
+  - pip3 install psutil
+
+script:
+ - python CI_test.py
