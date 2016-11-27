@@ -1,5 +1,7 @@
 language: python
-language: cpp
+
+compiler:
+  - g++
 
 python:
   - "3.4"
