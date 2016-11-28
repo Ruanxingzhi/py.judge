@@ -1,8 +1,4 @@
-{
-    "compiler_pas": "fpc ",
-    "compiler_cpp": "g++ ",
-    "compiler_c": "gcc ",
-    
+{    
     "start_id": 1,
     "end_id": 10,
     "input_suffix": "in",

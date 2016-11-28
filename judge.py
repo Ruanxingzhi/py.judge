@@ -84,9 +84,16 @@ def judge(player , prob):
 
     name          = prob
 
-    compiler_pas  = document["compiler_pas"]
-    compiler_cpp  = document["compiler_cpp"]
-    compiler_c    = document["compiler_c"]
+    compiler_pas  = "fpc "
+    compiler_cpp  = "g++ "
+    compiler_c    = "gcc "
+
+    try:
+        compiler_pas  = document["compiler_pas"]
+        compiler_cpp  = document["compiler_cpp"]
+        compiler_c    = document["compiler_c"]
+    except Exception:
+        pass
 
     startid       = document["start_id"]
     endid         = document["end_id"]
