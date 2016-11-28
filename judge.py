@@ -12,8 +12,12 @@ import threading
 from subprocess import *
 
 def diff(file1, file2):
-    f1 = open(file1)
-    f2 = open(file2)
+
+    try:
+        f1 = open(file1)
+        f2 = open(file2)
+    except Exception:
+        return (2,0,'','')      # FILE ERROR
 
     lineNumber = 0
     L1 = [x for x in f1.readlines() if x.strip() != '']
@@ -22,7 +26,7 @@ def diff(file1, file2):
     f2.close()
 
     if len(L1) != len(L2):
-        return (False, 0, '', '')
+        return (1, 0, '', '')   # WA
 
     for index in range(0, len(L2)):
         lineNumber += 1
@@ -31,7 +35,7 @@ def diff(file1, file2):
         if L1[index].strip() != L2[index].strip():
             return (False, lineNumber, L1[index].strip(), L2[index].strip())
 
-    return (True, 0, '', '')
+    return (0, 0, '', '')       # AC
 
 memory_max = 0
 timelimit = 0
@@ -67,9 +71,12 @@ def memory_checker(pid, time_limit):
 
         time.sleep(0.005)
 
+tot = 0
+
 def judge(player , prob):
     global memory_max
     global timelimit
+    global tot
 
     memory_max = 0
     readline.parse_and_bind('tab: complete')
@@ -81,7 +88,7 @@ def judge(player , prob):
 
     with open("./data/{0}/{0}.json".format(setting)) as setting_file:
         document = json.load(setting_file)
-
+    
     name          = prob
 
     compiler_pas  = "fpc "
@@ -101,7 +108,7 @@ def judge(player , prob):
     memlimit      = document["memory_limit"]
     input_suffix  = document["input_suffix"]
     output_suffix = document["output_suffix"]
-
+    
     formatter     = "{0}{1}.{2}"
     source_ext = '.cpp'
     build_file = 'a.out'
@@ -126,7 +133,7 @@ def judge(player , prob):
     if(os.system("cat ./source/{}/{}{} >tmp.out 2>tmp2.out".format(player,name,source_ext))):
         for i in range(startid, endid + 1):
             case += '-'
-        print(case)
+        print(case,end='')
         os.system("rm *.out")
         return
 
@@ -142,7 +149,7 @@ def judge(player , prob):
     if status != 0:
         for i in range(startid, endid + 1):
             case += 'C'
-        print(case)
+        print(case,end='')
         os.system("rm *.out")
         return
 
@@ -208,9 +215,11 @@ def judge(player , prob):
                 name, formatter.format(name, i, output_suffix)),
                 '{}.out'.format(name)
             )
-            if not succeeded:
+            if succeeded == 1:
                 case+='W'
-
+                flag = False
+            elif succeeded == 2:
+                case+='F'
                 flag = False
 
         if flag:
@@ -222,16 +231,39 @@ def judge(player , prob):
 
     # print('### ANALYZE ###')
 
-    print(case)
+    print(case,end='')
     
 
     os.system("rm *.in")
     os.system("rm *.out")
 
+
+    tot += int(float(total_passed)/float(endid - startid + 1)*100)
+
+def judgeSingle(player):
+    global tot
+
+    tot = 0
+
+    print("%s , "%player,end='')
+    for prob in sorted(os.listdir('data/')):
+        if os.path.isdir('data/'+prob):
+            judge(player,prob)
+            print(" , ",end='')
+    print("%s , "%tot)
+    
+
+def makehead():
+    print("Name , ",end='')
+    for prob in sorted(os.listdir('data/')):
+        if os.path.isdir('data/'+prob):
+            print(prob,' , ',end='')
+    print("total ,")
+
 if __name__ == "__main__":
-    judge('blue','aplusb')
-    judge('LGer','aplusb')
-    judge('ACer','aplusb')
-    judge('WAer','aplusb')
-    judge('REer','aplusb')
-    judge('CEer','aplusb')
+
+    makehead()
+
+    for player in sorted(os.listdir('source/')):
+        if os.path.isdir('source/'+player):
+            judgeSingle(player)

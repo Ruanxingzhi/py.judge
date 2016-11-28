@@ -9,6 +9,8 @@ int main(void)
     int a,b;
     scanf("%d%d",&a,&b);
     
+    printf("WAWAWAWAWA!!!!!!\nWAWAWAWAWA!!!!!!\nWAWAWAWAWA!!!!!!\nWAWAWAWAWA!!!!!!\n");
+    
 
     printf("%d",a+b);
 
