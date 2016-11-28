@@ -1,14 +1,13 @@
 {
-    "name": "aplusb",
-    "source_ext": ".c",
-    "build_file": "a.out",
-    "compiler": "gcc -O0",
+    "compiler_pas": "fpc ",
+    "compiler_cpp": "g++ ",
+    "compiler_c": "gcc ",
+    
     "start_id": 1,
     "end_id": 10,
     "input_suffix": "in",
     "output_suffix": "out",
-    "name_format": "{0}{1}.{2}",
+
     "time_limit": 1.0,
-    "memory_limit": 128.0,
-    "special_judge": false
+    "memory_limit": 128.0
 }

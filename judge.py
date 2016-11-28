@@ -82,18 +82,37 @@ def judge(player , prob):
     with open("./data/{0}/{0}.json".format(setting)) as setting_file:
         document = json.load(setting_file)
 
-    name          = document["name"]
-    source_ext    = document["source_ext"]
-    build_file    = document["build_file"]
-    compiler      = document["compiler"]
+    name          = prob
+
+    compiler_pas  = document["compiler_pas"]
+    compiler_cpp  = document["compiler_cpp"]
+    compiler_c    = document["compiler_c"]
+
     startid       = document["start_id"]
     endid         = document["end_id"]
     timelimit     = document["time_limit"]
     memlimit      = document["memory_limit"]
     input_suffix  = document["input_suffix"]
     output_suffix = document["output_suffix"]
-    formatter     = document["name_format"]
-    special_judge = document["special_judge"]
+
+    formatter     = "{0}{1}.{2}"
+    source_ext = '.cpp'
+    build_file = 'a.out'
+
+    if(os.system("cat ./source/{}/{}.cpp >tmp.out 2>tmp2.out".format(player,name)) == 0):
+        source_ext='.cpp'
+    elif(os.system("cat ./source/{}/{}.c >tmp.out 2>tmp2.out".format(player,name)) == 0):
+        source_ext='.c'
+    elif(os.system("cat ./source/{}/{}.pas >tmp.out 2>tmp2.out".format(player,name)) == 0):
+        source_ext='.pas'
+    
+    if(source_ext == '.cpp'):
+        compiler = compiler_cpp
+    elif(source_ext == '.c'):
+        compiler = compiler_c
+    elif(source_ext == '.pas'):
+        compiler = compiler_pas
+    
 
     spj = None
 
@@ -178,48 +197,14 @@ def judge(player , prob):
                 flag = False
 
         if flag:
-            if special_judge:
-                if spj is None:
-                    sys.path.append("./data/{}/".format(name))
-                    import spj
+            succeeded, lineNo, std, mine = diff('./data/{0}/{1}'.format(
+                name, formatter.format(name, i, output_suffix)),
+                '{}.out'.format(name)
+            )
+            if not succeeded:
+                case+='W'
 
-                spj.init(
-                    "./data/{0}/{1}".format(name, formatter.format(name, i, input_suffix)),
-                    "./data/{0}/{1}".format(name, formatter.format(name, i, output_suffix)),
-                    "{}.out".format(name)
-                )
-
-                spj.judge()
-                status = spj.status
-
-                if status != spj.ACCEPTED:
-                    if status == spj.ERROR:
-                        case+='X'
-
-                        flag = False
-
-                    elif status == spj.INTERNAL_ERROR:
-                        case+='X'
-
-                        flag = False
-
-                    elif status == spj.UNKNOWN:
-                        case+='U'
-
-                        flag = False
-
-                    if not flag:
-                        print("(info) {}".format(spj.message))
-
-            else:
-                succeeded, lineNo, std, mine = diff('./data/{0}/{1}'.format(
-                    name, formatter.format(name, i, output_suffix)),
-                    '{}.out'.format(name)
-                )
-                if not succeeded:
-                    case+='W'
-
-                    flag = False
+                flag = False
 
         if flag:
             case+='A'
