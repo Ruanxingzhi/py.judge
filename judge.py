@@ -86,29 +86,53 @@ def judge(player , prob):
 
     setting = prob
 
-    with open("./data/{0}/{0}.json".format(setting)) as setting_file:
-        document = json.load(setting_file)
+    try:
+        with open("./data/{0}/{0}.json".format(setting)) as setting_file:
+            document = json.load(setting_file)
+    except Exception:
+        pass
     
-    name          = prob
-
-    compiler_pas  = "fpc "
-    compiler_cpp  = "g++ "
-    compiler_c    = "gcc "
+    name = prob
 
     try:
         compiler_pas  = document["compiler_pas"]
+    except Exception:
+        compiler_pas = "fpc "
+    try:
         compiler_cpp  = document["compiler_cpp"]
+    except Exception:
+        compiler_cpp  = "g++ "
+    try:
         compiler_c    = document["compiler_c"]
     except Exception:
-        pass
-
-    startid       = document["start_id"]
-    endid         = document["end_id"]
-    timelimit     = document["time_limit"]
-    memlimit      = document["memory_limit"]
-    input_suffix  = document["input_suffix"]
-    output_suffix = document["output_suffix"]
+        compiler_c    = "gcc "
     
+
+    try:
+        startid       = document["start_id"]
+    except Exception:
+        startid       = 1
+    try:
+        endid         = document["end_id"]
+    except Exception:
+        endid         = 10
+    try:
+        timelimit     = document["time_limit"]
+    except Exception:
+        timelimit     = 1.0
+    try:
+        memlimit      = document["memory_limit"]
+    except Exception:
+        memlimit      = 128.0
+    try:
+        input_suffix  = document["input_suffix"]
+    except Exception:
+        input_suffix  = 'in'
+    try:
+        output_suffix = document["output_suffix"]
+    except Exception:
+        output_suffix = 'out'
+
     formatter     = "{0}{1}.{2}"
     source_ext = '.cpp'
     build_file = 'a.out'
@@ -132,8 +156,9 @@ def judge(player , prob):
 
     if(os.system("cat ./source/{}/{}{} >tmp.out 2>tmp2.out".format(player,name,source_ext))):
         for i in range(startid, endid + 1):
-            case += '-'
-        print(case,end='')
+            print('-',end='')
+            sys.stdout.flush()
+
         os.system("rm *.out")
         return
 
@@ -148,8 +173,9 @@ def judge(player , prob):
 
     if status != 0:
         for i in range(startid, endid + 1):
-            case += 'C'
-        print(case,end='')
+            print('C',end='')
+            sys.stdout.flush()
+        
         os.system("rm *.out")
         return
 
@@ -196,17 +222,20 @@ def judge(player , prob):
         # print("Memory: {}MB".format(float(memory_max) / (1024 * 1024)))
 
         if not flag:        
-            case+='T'
+            print('T',end='')
+            sys.stdout.flush()
 
         if flag:
             if status != 0:
-                case+='R'
+                print('R',end='')
+                sys.stdout.flush()
 
                 flag = False
 
         if flag:
             if memory_max / (1024 ** 2) > memlimit:
-                case+='M'
+                print('M',end='')
+                sys.stdout.flush()
             
                 flag = False
 
@@ -216,14 +245,17 @@ def judge(player , prob):
                 '{}.out'.format(name)
             )
             if succeeded == 1:
-                case+='W'
+                print('W',end='')
+                sys.stdout.flush()
                 flag = False
             elif succeeded == 2:
-                case+='F'
+                print('F',end='')
+                sys.stdout.flush()
                 flag = False
 
         if flag:
-            case+='A'
+            print('A',end='')
+            sys.stdout.flush()
             total_passed += 1
 
         total_time += passed
@@ -231,7 +263,7 @@ def judge(player , prob):
 
     # print('### ANALYZE ###')
 
-    print(case,end='')
+    # print(case,end='')
     
 
     os.system("rm *.in")

@@ -1,9 +1,0 @@
-{    
-    "start_id": 1,
-    "end_id": 10,
-    "input_suffix": "in",
-    "output_suffix": "out",
-
-    "time_limit": 1.0,
-    "memory_limit": 128.0
-}
